@@ -42,12 +42,12 @@
 #include "tf2/time_cache.h"
 #include "tf2/exceptions.h"
 
-#include "console_bridge/console.h"
+// #include "console_bridge/console.h"
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2/LinearMath/Transform.h"
 #include "tf2/LinearMath/Vector3.h"
 
-#include "builtin_interfaces/msg/time.hpp"
+#include "geometry_msgs/msg/time.hpp"
 #include "geometry_msgs/msg/transform.hpp"
 #include "geometry_msgs/msg/transform_stamped.hpp"
 
@@ -90,7 +90,7 @@ void fillOrWarnMessageForInvalidFrame(
   if (error_msg != nullptr) {
     *error_msg = s;
   } else {
-    CONSOLE_BRIDGE_logWarn("%s", s.c_str());
+    // CONSOLE_BRIDGE_logWarn("%s", s.c_str());
   }
 }
 
@@ -206,24 +206,24 @@ bool BufferCore::setTransformImpl(
 
   bool error_exists = false;
   if (stripped_child_frame_id == stripped_frame_id) {
-    CONSOLE_BRIDGE_logError(
-      "TF_SELF_TRANSFORM: Ignoring transform from authority \"%s\" with frame_id and  "
-      "child_frame_id \"%s\" because they are the same",
-      authority.c_str(), stripped_child_frame_id.c_str());
+    // CONSOLE_BRIDGE_logError(
+    //   "TF_SELF_TRANSFORM: Ignoring transform from authority \"%s\" with frame_id and  "
+    //   "child_frame_id \"%s\" because they are the same",
+    //   authority.c_str(), stripped_child_frame_id.c_str());
     error_exists = true;
   }
 
   if (stripped_child_frame_id.empty()) {
-    CONSOLE_BRIDGE_logError(
-      "TF_NO_CHILD_FRAME_ID: Ignoring transform from authority \"%s\" because child_frame_id not"
-      " set ", authority.c_str());
+    // CONSOLE_BRIDGE_logError(
+    //   "TF_NO_CHILD_FRAME_ID: Ignoring transform from authority \"%s\" because child_frame_id not"
+    //   " set ", authority.c_str());
     error_exists = true;
   }
 
   if (stripped_frame_id.empty()) {
-    CONSOLE_BRIDGE_logError(
-      "TF_NO_FRAME_ID: Ignoring transform with child_frame_id \"%s\"  from authority \"%s\" "
-      "because frame_id not set", stripped_child_frame_id.c_str(), authority.c_str());
+    // CONSOLE_BRIDGE_logError(
+    //   "TF_NO_FRAME_ID: Ignoring transform with child_frame_id \"%s\"  from authority \"%s\" "
+    //   "because frame_id not set", stripped_child_frame_id.c_str(), authority.c_str());
     error_exists = true;
   }
 
@@ -232,14 +232,14 @@ bool BufferCore::setTransformImpl(
     std::isnan(transform_in.getRotation().x()) || std::isnan(transform_in.getRotation().y()) ||
     std::isnan(transform_in.getRotation().z()) || std::isnan(transform_in.getRotation().w()))
   {
-    CONSOLE_BRIDGE_logError(
-      "TF_NAN_INPUT: Ignoring transform for child_frame_id \"%s\" from authority \"%s\" because"
-      " of a nan value in the transform (%f %f %f) (%f %f %f %f)",
-      stripped_child_frame_id.c_str(), authority.c_str(),
-      transform_in.getOrigin().x(), transform_in.getOrigin().y(), transform_in.getOrigin().z(),
-      transform_in.getRotation().x(), transform_in.getRotation().y(),
-      transform_in.getRotation().z(), transform_in.getRotation().w()
-    );
+    // CONSOLE_BRIDGE_logError(
+    //   "TF_NAN_INPUT: Ignoring transform for child_frame_id \"%s\" from authority \"%s\" because"
+    //   " of a nan value in the transform (%f %f %f) (%f %f %f %f)",
+    //   stripped_child_frame_id.c_str(), authority.c_str(),
+    //   transform_in.getOrigin().x(), transform_in.getOrigin().y(), transform_in.getOrigin().z(),
+    //   transform_in.getRotation().x(), transform_in.getRotation().y(),
+    //   transform_in.getRotation().z(), transform_in.getRotation().w()
+    // );
     error_exists = true;
   }
 
@@ -251,12 +251,12 @@ bool BufferCore::setTransformImpl(
     QUATERNION_NORMALIZATION_TOLERANCE;
 
   if (!valid) {
-    CONSOLE_BRIDGE_logError(
-      "TF_DENORMALIZED_QUATERNION: Ignoring transform for child_frame_id \"%s\" from authority"
-      " \"%s\" because of an invalid quaternion in the transform (%f %f %f %f)",
-      stripped_child_frame_id.c_str(), authority.c_str(),
-      transform_in.getRotation().x(), transform_in.getRotation().y(),
-      transform_in.getRotation().z(), transform_in.getRotation().w());
+    // CONSOLE_BRIDGE_logError(
+    //   "TF_DENORMALIZED_QUATERNION: Ignoring transform for child_frame_id \"%s\" from authority"
+    //   " \"%s\" because of an invalid quaternion in the transform (%f %f %f %f)",
+    //   stripped_child_frame_id.c_str(), authority.c_str(),
+    //   transform_in.getRotation().x(), transform_in.getRotation().y(),
+    //   transform_in.getRotation().z(), transform_in.getRotation().w());
     error_exists = true;
   }
 
@@ -289,10 +289,10 @@ bool BufferCore::setTransformImpl(
       frame_authority_[frame_number] = authority;
     } else {
       std::string stamp_str = displayTimePoint(stamp);
-      CONSOLE_BRIDGE_logWarn(
-        "TF_OLD_DATA ignoring data from the past for frame %s at time %s according to authority"
-        " %s\nPossible reasons are listed at http://wiki.ros.org/tf/Errors%%20explained",
-        stripped_child_frame_id.c_str(), stamp_str.c_str(), authority.c_str());
+      // CONSOLE_BRIDGE_logWarn(
+      //   "TF_OLD_DATA ignoring data from the past for frame %s at time %s according to authority"
+      //   " %s\nPossible reasons are listed at http://wiki.ros.org/tf/Errors%%20explained",
+      //   stripped_child_frame_id.c_str(), stamp_str.c_str(), authority.c_str());
       return false;
     }
   }
@@ -678,7 +678,7 @@ void BufferCore::lookupTransformImpl(
       case tf2::TF2Error::TF2_LOOKUP_ERROR:
         throw LookupException(error_string);
       default:
-        CONSOLE_BRIDGE_logError("Unknown error code: %d", retval);
+        // CONSOLE_BRIDGE_logError("Unknown error code: %d", retval);
         assert(0);
     }
   }
@@ -1480,7 +1480,7 @@ void BufferCore::_chainAsVector(
       case tf2::TF2Error::TF2_LOOKUP_ERROR:
         throw LookupException(error_string);
       default:
-        CONSOLE_BRIDGE_logError("Unknown error code: %d", retval);
+        // CONSOLE_BRIDGE_logError("Unknown error code: %d", retval);
         assert(0);
     }
   }
@@ -1506,7 +1506,7 @@ void BufferCore::_chainAsVector(
         case tf2::TF2Error::TF2_LOOKUP_ERROR:
           throw LookupException(error_string);
         default:
-          CONSOLE_BRIDGE_logError("Unknown error code: %d", retval);
+          // CONSOLE_BRIDGE_logError("Unknown error code: %d", retval);
           assert(0);
       }
     }
