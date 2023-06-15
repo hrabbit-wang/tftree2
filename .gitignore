@@ -1,2 +1,5 @@
 .DS_Store
-
+bazel-bin
+bazel-out
+bazel-testlogs
+bazel-tftree2
